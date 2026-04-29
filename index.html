@@ -1,126 +1,493 @@
-<!DOCTYPE html><html lang="pt-BR">
+<!DOCTYPE html>
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Religião e Deuses Politeístas</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Religião e Deuses Politeístas | Apresentação em Slides</title>
   <style>
-    body {
+    * {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: #0f172a;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', 'Poppins', 'Arial', sans-serif;
+      background: linear-gradient(145deg, #0b1120 0%, #0f172a 100%);
+      color: #f1f5f9;
+      overflow-x: hidden;
+      overflow-y: hidden;
+      height: 100vh;
+      width: 100vw;
+    }
+
+    /* Container principal estilo swipe/slide */
+    .slides-container {
+      height: 100vh;
+      width: 100%;
+      scroll-snap-type: y mandatory;
+      overflow-y: scroll;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* Cada slide ocupa 100% da viewport */
+    .slide {
+      scroll-snap-align: start;
+      min-height: 100vh;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+      position: relative;
+      background: radial-gradient(ellipse at 20% 30%, rgba(21, 31, 55, 0.6), rgba(5, 10, 25, 0.9));
+      border-bottom: 1px solid rgba(56, 189, 248, 0.2);
+      transition: all 0.2s ease;
+    }
+
+    /* Cartões e estilo interno mais refinado */
+    .slide-card {
+      max-width: 900px;
+      width: 100%;
+      background: rgba(30, 41, 59, 0.75);
+      backdrop-filter: blur(10px);
+      border-radius: 2.5rem;
+      padding: 2rem 2.2rem;
+      box-shadow: 0 25px 40px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(56, 189, 248, 0.2);
+      transition: transform 0.3s ease;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+
+    .slide-card h2 {
+      font-size: 2.4rem;
+      background: linear-gradient(135deg, #a5f3fc, #38bdf8);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      margin-bottom: 1.2rem;
+      letter-spacing: -0.5px;
+      display: inline-block;
+      border-left: 4px solid #38bdf8;
+      padding-left: 1rem;
+    }
+
+    .slide-card h3 {
+      font-size: 1.6rem;
+      color: #cbd5e1;
+      margin: 0.5rem 0 1rem 0;
+      font-weight: 500;
+    }
+
+    .slide-card p {
+      font-size: 1.1rem;
+      line-height: 1.5;
+      margin-bottom: 1.2rem;
       color: #e2e8f0;
-    }header {
-  background: linear-gradient(90deg, #1e293b, #334155);
-  padding: 20px;
-  text-align: center;
-}
+    }
 
-header h1 {
-  margin: 0;
-  font-size: 2.5em;
-}
+    .deuses-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+      margin-top: 1.5rem;
+    }
 
-nav {
-  background: #1e293b;
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  padding: 10px;
-}
+    .deus-item {
+      background: #0f172ac9;
+      padding: 0.8rem 1.4rem;
+      border-radius: 60px;
+      font-weight: bold;
+      font-size: 1rem;
+      backdrop-filter: blur(4px);
+      border: 1px solid #38bdf870;
+      transition: all 0.2s;
+      color: #b9e6ff;
+    }
 
-nav a {
-  color: #38bdf8;
-  text-decoration: none;
-  font-weight: bold;
-}
+    .deus-item span {
+      color: #facc15;
+      font-weight: bold;
+    }
 
-nav a:hover {
-  text-decoration: underline;
-}
+    .badge-tema {
+      display: inline-block;
+      background: #1e293b;
+      padding: 0.2rem 0.9rem;
+      border-radius: 30px;
+      font-size: 0.8rem;
+      margin-bottom: 1rem;
+      color: #94a3b8;
+      letter-spacing: 1px;
+    }
 
-section {
-  padding: 30px;
-  max-width: 900px;
-  margin: auto;
-}
+    /* Navegação do slide (indicadores + setas) */
+    .slide-nav {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      display: flex;
+      gap: 0.8rem;
+      z-index: 30;
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(12px);
+      padding: 0.5rem 1rem;
+      border-radius: 60px;
+      border: 1px solid #38bdf860;
+    }
 
-.card {
-  background: #1e293b;
-  padding: 20px;
-  margin: 20px 0;
-  border-radius: 12px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.3);
-}
+    .nav-dot {
+      width: 10px;
+      height: 10px;
+      background: #475569;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
 
-footer {
-  background: #020617;
-  text-align: center;
-  padding: 15px;
-  margin-top: 30px;
-}
+    .nav-dot.active {
+      background: #38bdf8;
+      width: 24px;
+      border-radius: 20px;
+      box-shadow: 0 0 8px #38bdf8;
+    }
 
+    .arrow-btn {
+      background: #1e293b;
+      border: none;
+      color: white;
+      font-size: 1.6rem;
+      font-weight: bold;
+      cursor: pointer;
+      padding: 0 0.8rem;
+      border-radius: 40px;
+      transition: 0.2s;
+      line-height: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .arrow-btn:hover {
+      background: #38bdf8;
+      color: #0f172a;
+    }
+
+    /* Botão flutuante de dica */
+    .scroll-hint {
+      position: fixed;
+      bottom: 1.8rem;
+      left: 1.5rem;
+      background: #0f172acc;
+      backdrop-filter: blur(5px);
+      font-size: 0.75rem;
+      padding: 0.3rem 0.9rem;
+      border-radius: 30px;
+      color: #94a3b8;
+      z-index: 30;
+      pointer-events: none;
+      font-weight: 400;
+      border: 1px solid #334155;
+    }
+
+    /* Ajustes para mobile e responsividade */
+    @media (max-width: 700px) {
+      .slide-card {
+        padding: 1.5rem;
+      }
+      .slide-card h2 {
+        font-size: 1.8rem;
+      }
+      .deus-item {
+        font-size: 0.85rem;
+        padding: 0.5rem 1rem;
+      }
+      .slide-nav {
+        bottom: 1rem;
+        right: 1rem;
+      }
+      .arrow-btn {
+        font-size: 1.2rem;
+        padding: 0 0.6rem;
+      }
+    }
+
+    /* Animação de entrada suave */
+    @keyframes fadeSlideUp {
+      0% {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .slide-card {
+      animation: fadeSlideUp 0.5s ease-out;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 1.5rem;
+      font-size: 0.8rem;
+      color: #5b6e8c;
+    }
   </style>
 </head>
-<body><header>
-  <h1>Religião e Deuses Politeista</h1>
-  <p>Trabalho Escolar sobre Deuses e Culturas Antigas</p>
-</header><nav>
-  <a href="#grecia">Grécia</a>
-  <a href="#egito">Egito</a>
-  <a href="#nordico">Nórdico</a>
-  <a href="#hinduismo">Hinduísmo</a>
-</nav><section id="intro">
-  <div class="card">
-    <h2>O que é Politeísmo?</h2>
-    <p><strong>Versão simples:</strong><br>
-    O politeísmo é a crença em vários deuses. Cada deus tem uma função diferente, como cuidar do mar, do céu ou da guerra. Muitas vezes, esses deuses são representados com forma humana. Esse tipo de religião era comum em povos antigos, como os gregos, romanos e egípcios. Esses deuses fazem parte de um grupo chamado panteão.</p><p><strong>Versão mais formal:</strong><br>
-O politeísmo é um sistema religioso baseado na crença e na adoração de múltiplas divindades, cada uma com funções, poderes e características próprias. Frequentemente, essas divindades são representadas de forma antropomórfica, apresentando traços humanos. Esse modelo religioso foi predominante em diversas civilizações da Antiguidade, como a grega, a romana e a egípcia. No politeísmo, as divindades costumam ser organizadas em panteões, nos quais cada deus está associado a elementos da natureza, aspectos da vida humana ou forças do universo.</p>
+<body>
 
+<div class="slides-container" id="slidesContainer">
+  <!-- SLIDE 0 - INTRODUÇÃO / O que é Politeísmo -->
+  <div class="slide" id="slide0">
+    <div class="slide-card">
+      <div class="badge-tema">🔱 Panteões Antigos e Modernos</div>
+      <h2>🌍 Politeísmo</h2>
+      <h3>Crença em múltiplos deuses e forças da natureza</h3>
+      <p><strong>🎓 Versão simples:</strong><br>
+      O politeísmo é a crença em vários deuses. Cada deus tem uma função diferente, como cuidar do mar, do céu ou da guerra. Muitas vezes, esses deuses são representados com forma humana. Esse tipo de religião era comum em povos antigos, como os gregos, romanos e egípcios. Esses deuses fazem parte de um grupo chamado panteão.</p>
+      <p><strong>📜 Versão mais formal:</strong><br>
+      O politeísmo é um sistema religioso baseado na crença e na adoração de múltiplas divindades, cada uma com funções, poderes e características próprias. Frequentemente, essas divindades são representadas de forma antropomórfica, apresentando traços humanos. Esse modelo religioso foi predominante em diversas civilizações da Antiguidade, como a grega, a romana e a egípcia. No politeísmo, as divindades costumam ser organizadas em panteões, nos quais cada deus está associado a elementos da natureza, aspectos da vida humana ou forças do universo.</p>
+      <footer>✨ Use a roda do mouse / scroll ou as setas laterais</footer>
+    </div>
   </div>
-</section><section id="grecia">
-  <div class="card">
-    <h2>Mitologia Grega</h2>
-    <p>Na Grécia Antiga, os deuses viviam no Monte Olimpo. Alguns dos principais são:</p>
-    <ul>
-      <li>Zeus - Deus do trovão</li>
-      <li>Atena - Deusa da sabedoria</li>
-      <li>Poseidon - Deus dos mares</li>
-      <li>Hades - Deus do submundo</li>
-    </ul>
+
+  <!-- SLIDE 1 - MITOLOGIA GREGA -->
+  <div class="slide" id="slide1">
+    <div class="slide-card">
+      <div class="badge-tema">🏛️ Grécia Antiga | Monte Olimpo</div>
+      <h2>⚡ Mitologia Grega</h2>
+      <p>Os gregos acreditavam em divindades que viviam no Monte Olimpo, regendo cada aspecto da vida e da natureza. Seus mitos influenciaram a arte, literatura e filosofia ocidental até hoje.</p>
+      <div class="deuses-grid">
+        <div class="deus-item"><span>⚡ Zeus</span> — Deus do trovão & rei dos deuses</div>
+        <div class="deus-item"><span>🦉 Atena</span> — Sabedoria e guerra justa</div>
+        <div class="deus-item"><span>🌊 Poseidon</span> — Mares e terremotos</div>
+        <div class="deus-item"><span>🏺 Hades</span> — Submundo & riquezas da terra</div>
+        <div class="deus-item"><span>❤️ Afrodite</span> — Amor e beleza</div>
+        <div class="deus-item"><span>⚔️ Ares</span> — Guerra violenta</div>
+      </div>
+      <p style="margin-top: 1rem;">Outros deuses: Apolo (sol/arte), Ártemis (caça), Hermes (mensageiro), Hefesto (forja) e Hera (casamento).</p>
+    </div>
   </div>
-</section><section id="egito">
-  <div class="card">
-    <h2>Mitologia Egípcia</h2>
-    <p>Os egípcios acreditavam em vários deuses ligados à natureza e à vida após a morte:</p>
-    <ul>
-      <li>Rá - Deus do Sol</li>
-      <li>Anúbis - Deus dos mortos</li>
-      <li>Ísis - Deusa da magia</li>
-      <li>Osíris - Deus da vida após a morte</li>
-    </ul>
+
+  <!-- SLIDE 2 - MITOLOGIA EGÍPCIA -->
+  <div class="slide" id="slide2">
+    <div class="slide-card">
+      <div class="badge-tema">𓃀 Antigo Egito | Vida após a morte</div>
+      <h2>☀️ Mitologia Egípcia</h2>
+      <p>Os egípcios cultuavam divindades ligadas ao ciclo do Nilo, à mumificação e ao julgamento da alma. Os faraós eram considerados representantes dos deuses na Terra.</p>
+      <div class="deuses-grid">
+        <div class="deus-item"><span>🌞 Rá</span> — Deus do Sol, criador do mundo</div>
+        <div class="deus-item"><span>⚰️ Anúbis</span> — Protetor dos mortos, embalsamamento</div>
+        <div class="deus-item"><span>🔮 Ísis</span> — Magia, maternidade e cura</div>
+        <div class="deus-item"><span>🌾 Osíris</span> — Juiz dos mortos, renascimento</div>
+        <div class="deus-item"><span>🐊 Sobek</span> — Força e poder do Nilo</div>
+        <div class="deus-item"><span>🐱 Bastet</span> — Proteção, alegria e lar</div>
+      </div>
+      <p><strong>Curiosidade:</strong> Hórus (céu) e Toth (sabedoria) também possuem papéis fundamentais nos mitos de criação e no equilíbrio do universo.</p>
+    </div>
   </div>
-</section><section id="nordico">
-  <div class="card">
-    <h2>Mitologia Nórdica</h2>
-    <p>Os povos nórdicos (vikings) tinham seus próprios deuses:</p>
-    <ul>
-      <li>Odin - Deus da sabedoria</li>
-      <li>Thor - Deus do trovão</li>
-      <li>Loki - Deus da trapaça</li>
-    </ul>
+
+  <!-- SLIDE 3 - MITOLOGIA NÓRDICA -->
+  <div class="slide" id="slide3">
+    <div class="slide-card">
+      <div class="badge-tema">⚔️ Vikings | Yggdrasil & Ragnarök</div>
+      <h2>🐦‍⬛ Mitologia Nórdica</h2>
+      <p>Para os povos escandinavos, o universo era sustentado pela árvore Yggdrasil, e os deuses (Aesir e Vanir) enfrentavam gigantes e forças do caos. A bravura em batalha era essencial para chegar ao Valhalla.</p>
+      <div class="deuses-grid">
+        <div class="deus-item"><span>👁️ Odin</span> — Sabedoria, guerra e poesia</div>
+        <div class="deus-item"><span>🔨 Thor</span> — Trovão, proteção da humanidade</div>
+        <div class="deus-item"><span>🎭 Loki</span> — Trapaça, metamorfose (nem sempre maligno)</div>
+        <div class="deus-item"><span>💐 Freyja</span> — Amor, fertilidade e magia</div>
+        <div class="deus-item"><span>⛵ Njord</span> — Ventos, mar e riqueza</div>
+        <div class="deus-item"><span>🤚 Heimdall</span> — Guardião do Bifrost (ponte arco-íris)</div>
+      </div>
+      <p>⚡ Thor com seu martelo Mjölnir e Odin com os corvos Hugin e Munin (Pensamento e Memória) são símbolos centrais desse rico panteão.</p>
+    </div>
   </div>
-</section><section id="hinduismo">
-  <div class="card">
-    <h2>Hinduísmo</h2>
-    <p>O hinduísmo é uma religião praticada até hoje e possui muitos deuses:</p>
-    <ul>
-      <li>Brahma - Criador do universo</li>
-      <li>Vishnu - Preservador</li>
-      <li>Shiva - Destruidor e renovador</li>
-    </ul>
+
+  <!-- SLIDE 4 - HINDUÍSMO (Religião viva) -->
+  <div class="slide" id="slide4">
+    <div class="slide-card">
+      <div class="badge-tema">🕉️ Sanātana Dharma | Tradição milenar</div>
+      <h2>🕉️ Hinduísmo</h2>
+      <p>O hinduísmo é uma das religiões mais antigas do mundo, praticada até hoje principalmente na Índia. Possui uma miríade de deuses e deusas que representam aspectos da realidade suprema (Brahman).</p>
+      <div class="deuses-grid">
+        <div class="deus-item"><span>🪷 Brahma</span> — Criador do universo</div>
+        <div class="deus-item"><span>🌀 Vishnu</span> — Preservador da ordem cósmica</div>
+        <div class="deus-item"><span>🔱 Shiva</span> — Destruidor e renovador (cosmos)</div>
+        <div class="deus-item"><span>🦁 Lakshmi</span> — Riqueza e fortuna</div>
+        <div class="deus-item"><span>🎨 Sarasvati</span> — Conhecimento, artes</div>
+        <div class="deus-item"><span>🐒 Hanuman</span> — Devoção, força leal</div>
+      </div>
+      <p>Além da Trindade (Trimurti), destaca-se também Durga, Kali, Ganesha (cabeça de elefante, removedor de obstáculos) — mostrando a incrível diversidade do politeísmo hindu.</p>
+    </div>
   </div>
-</section><footer>
-  <p>Ativdade de História</p>
-  <p>Por: Breno</p>
-</footer></body>
+
+  <!-- SLIDE EXTRA - Curiosidades e legado -->
+  <div class="slide" id="slide5">
+    <div class="slide-card">
+      <div class="badge-tema">🏛️ Legado Cultural</div>
+      <h2>📖 Influência dos Deuses Politeístas</h2>
+      <p>Os panteões influenciaram o calendário, nomes de planetas, arquitetura, literatura (Homero, Ovídio), jogos, filmes e até mesmo dias da semana. Mitologias seguem vivas no imaginário coletivo.</p>
+      <div style="display: flex; flex-wrap: wrap; gap: 0.6rem; margin: 1rem 0;">
+        <span style="background:#0f172a; padding:0.3rem 0.8rem; border-radius:30px;">🗓️ Quarta-feira (Wōden/Odin)</span>
+        <span style="background:#0f172a; padding:0.3rem 0.8rem; border-radius:30px;">♃ Júpiter (Zeus)</span>
+        <span style="background:#0f172a; padding:0.3rem 0.8rem; border-radius:30px;">🌟 Via Láctea (mito grego)</span>
+        <span style="background:#0f172a; padding:0.3rem 0.8rem; border-radius:30px;">🎭 Teatro grego: Dioniso</span>
+      </div>
+      <p>O politeísmo não é apenas história: o hinduísmo, xintoísmo e diversas tradições indígenas mostram que a crença em múltiplos deuses segue presente e vibrante. Respeito à diversidade religiosa é fundamental!</p>
+      <footer style="margin-top: 1.5rem;">✨ Trabalho de História — Breno ✨</footer>
+    </div>
+  </div>
+</div>
+
+<!-- Navegação fixa com indicadores e setas -->
+<div class="slide-nav">
+  <button class="arrow-btn" id="prevSlideBtn" aria-label="Slide anterior">◀</button>
+  <div id="dotsContainer" style="display: flex; gap: 8px; align-items: center;"></div>
+  <button class="arrow-btn" id="nextSlideBtn" aria-label="Próximo slide">▶</button>
+</div>
+
+<div class="scroll-hint">
+  ⬇️ Role para navegar pelos slides
+</div>
+
+<script>
+  (function() {
+    const slidesContainer = document.getElementById('slidesContainer');
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    const totalSlides = slides.length;
+
+    // Criar indicadores (dots)
+    const dotsContainer = document.getElementById('dotsContainer');
+    let dotElements = [];
+
+    function createDots() {
+      dotsContainer.innerHTML = '';
+      for (let i = 0; i < totalSlides; i++) {
+        const dot = document.createElement('div');
+        dot.classList.add('nav-dot');
+        dot.dataset.index = i;
+        dot.addEventListener('click', () => {
+          goToSlide(i);
+        });
+        dotsContainer.appendChild(dot);
+        dotElements.push(dot);
+      }
+      updateActiveDot();
+    }
+
+    function updateActiveDot() {
+      // Detecta o slide ativo baseado no scroll
+      const scrollTop = slidesContainer.scrollTop;
+      const slideHeight = slides[0].clientHeight;
+      let activeIndex = Math.round(scrollTop / slideHeight);
+      activeIndex = Math.min(Math.max(activeIndex, 0), totalSlides - 1);
+      
+      dotElements.forEach((dot, idx) => {
+        if (idx === activeIndex) {
+          dot.classList.add('active');
+        } else {
+          dot.classList.remove('active');
+        }
+      });
+    }
+
+    // Função para navegar suavemente até determinado slide
+    function goToSlide(index) {
+      if (index < 0) index = 0;
+      if (index >= totalSlides) index = totalSlides - 1;
+      const targetSlide = slides[index];
+      if (targetSlide) {
+        targetSlide.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // atraso curto para garantir que o evento de scroll atualize os dots
+        setTimeout(updateActiveDot, 100);
+      }
+    }
+
+    // Eventos de scroll para atualizar dots e também sincronizar o estado
+    let scrollTimeout;
+    slidesContainer.addEventListener('scroll', () => {
+      if (scrollTimeout) clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(() => {
+        updateActiveDot();
+      }, 30);
+      updateActiveDot(); // chamada rápida para feedback
+    });
+
+    // Botões próximo/anterior
+    const prevBtn = document.getElementById('prevSlideBtn');
+    const nextBtn = document.getElementById('nextSlideBtn');
+
+    function getCurrentSlideIndex() {
+      const scrollTop = slidesContainer.scrollTop;
+      const slideHeight = slides[0].clientHeight;
+      let idx = Math.round(scrollTop / slideHeight);
+      return Math.min(Math.max(idx, 0), totalSlides - 1);
+    }
+
+    prevBtn.addEventListener('click', () => {
+      let current = getCurrentSlideIndex();
+      goToSlide(current - 1);
+    });
+
+    nextBtn.addEventListener('click', () => {
+      let current = getCurrentSlideIndex();
+      goToSlide(current + 1);
+    });
+
+    // Ajustar altura dos slides dinamicamente em caso de redimensionamento (manter snap)
+    function refreshSlideHeights() {
+      // optional: garante que o scroll snap funcione bem quando o viewport muda
+      // não é necessário mudar altura explícita, pois cada slide tem min-height:100vh
+      // mas forçamos re-calculo de índice para dots
+      updateActiveDot();
+    }
+    window.addEventListener('resize', () => {
+      refreshSlideHeights();
+      // ajusta possível offset do scroll para manter slide correto
+      let currentIdx = getCurrentSlideIndex();
+      // ao redimensionar drasticamente, revalida posição
+      goToSlide(currentIdx);
+    });
+
+    // Suporte a teclado: setas para cima/baixo (já padrão do scroll, mas podemos facilitar)
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        let current = getCurrentSlideIndex();
+        goToSlide(current - 1);
+      } else if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        let current = getCurrentSlideIndex();
+        goToSlide(current + 1);
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        let current = getCurrentSlideIndex();
+        goToSlide(current - 1);
+      } else if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        let current = getCurrentSlideIndex();
+        goToSlide(current + 1);
+      }
+    });
+
+    // Inicialização
+    createDots();
+    // garantir que o primeiro slide esteja no topo caso haja algum offset estranho
+    slidesContainer.scrollTo(0, 0);
+    updateActiveDot();
+
+    // Pequeno ajuste para quando terminar de carregar imagens (caso houvesse)
+    window.addEventListener('load', () => {
+      updateActiveDot();
+      goToSlide(0);
+    });
+  })();
+</script>
+</body>
 </html>
