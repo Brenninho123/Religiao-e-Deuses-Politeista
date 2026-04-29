@@ -241,7 +241,6 @@
 <body>
 
 <div class="slides-container" id="slidesContainer">
-  <!-- SLIDE 0 - INTRODUÇÃO / O que é Politeísmo -->
   <div class="slide" id="slide0">
     <div class="slide-card">
       <div class="badge-tema">🔱 Panteões Antigos e Modernos</div>
@@ -255,26 +254,7 @@
     </div>
   </div>
 
-  <!-- SLIDE 1 - MITOLOGIA GREGA -->
   <div class="slide" id="slide1">
-    <div class="slide-card">
-      <div class="badge-tema">🏛️ Grécia Antiga | Monte Olimpo</div>
-      <h2>⚡ Mitologia Grega</h2>
-      <p>Os gregos acreditavam em divindades que viviam no Monte Olimpo, regendo cada aspecto da vida e da natureza. Seus mitos influenciaram a arte, literatura e filosofia ocidental até hoje.</p>
-      <div class="deuses-grid">
-        <div class="deus-item"><span>⚡ Zeus</span> — Deus do trovão & rei dos deuses</div>
-        <div class="deus-item"><span>🦉 Atena</span> — Sabedoria e guerra justa</div>
-        <div class="deus-item"><span>🌊 Poseidon</span> — Mares e terremotos</div>
-        <div class="deus-item"><span>🏺 Hades</span> — Submundo & riquezas da terra</div>
-        <div class="deus-item"><span>❤️ Afrodite</span> — Amor e beleza</div>
-        <div class="deus-item"><span>⚔️ Ares</span> — Guerra violenta</div>
-      </div>
-      <p style="margin-top: 1rem;">Outros deuses: Apolo (sol/arte), Ártemis (caça), Hermes (mensageiro), Hefesto (forja) e Hera (casamento).</p>
-    </div>
-  </div>
-
-  <!-- SLIDE 2 - MITOLOGIA EGÍPCIA -->
-  <div class="slide" id="slide2">
     <div class="slide-card">
       <div class="badge-tema">𓃀 Antigo Egito | Vida após a morte</div>
       <h2>☀️ Mitologia Egípcia</h2>
@@ -291,8 +271,7 @@
     </div>
   </div>
 
-  <!-- SLIDE 3 - MITOLOGIA NÓRDICA -->
-  <div class="slide" id="slide3">
+  <div class="slide" id="slide2">
     <div class="slide-card">
       <div class="badge-tema">⚔️ Vikings | Yggdrasil & Ragnarök</div>
       <h2>🐦‍⬛ Mitologia Nórdica</h2>
@@ -309,8 +288,7 @@
     </div>
   </div>
 
-  <!-- SLIDE 4 - HINDUÍSMO (Religião viva) -->
-  <div class="slide" id="slide4">
+  <div class="slide" id="slide3">
     <div class="slide-card">
       <div class="badge-tema">🕉️ Sanātana Dharma | Tradição milenar</div>
       <h2>🕉️ Hinduísmo</h2>
@@ -327,8 +305,7 @@
     </div>
   </div>
 
-  <!-- SLIDE EXTRA - Curiosidades e legado -->
-  <div class="slide" id="slide5">
+  <div class="slide" id="slide4">
     <div class="slide-card">
       <div class="badge-tema">🏛️ Legado Cultural</div>
       <h2>📖 Influência dos Deuses Politeístas</h2>
@@ -345,7 +322,6 @@
   </div>
 </div>
 
-<!-- Navegação fixa com indicadores e setas -->
 <div class="slide-nav">
   <button class="arrow-btn" id="prevSlideBtn" aria-label="Slide anterior">◀</button>
   <div id="dotsContainer" style="display: flex; gap: 8px; align-items: center;"></div>
@@ -362,7 +338,6 @@
     const slides = Array.from(document.querySelectorAll('.slide'));
     const totalSlides = slides.length;
 
-    // Criar indicadores (dots)
     const dotsContainer = document.getElementById('dotsContainer');
     let dotElements = [];
 
@@ -382,7 +357,6 @@
     }
 
     function updateActiveDot() {
-      // Detecta o slide ativo baseado no scroll
       const scrollTop = slidesContainer.scrollTop;
       const slideHeight = slides[0].clientHeight;
       let activeIndex = Math.round(scrollTop / slideHeight);
@@ -397,29 +371,25 @@
       });
     }
 
-    // Função para navegar suavemente até determinado slide
     function goToSlide(index) {
       if (index < 0) index = 0;
       if (index >= totalSlides) index = totalSlides - 1;
       const targetSlide = slides[index];
       if (targetSlide) {
         targetSlide.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        // atraso curto para garantir que o evento de scroll atualize os dots
         setTimeout(updateActiveDot, 100);
       }
     }
 
-    // Eventos de scroll para atualizar dots e também sincronizar o estado
     let scrollTimeout;
     slidesContainer.addEventListener('scroll', () => {
       if (scrollTimeout) clearTimeout(scrollTimeout);
       scrollTimeout = setTimeout(() => {
         updateActiveDot();
       }, 30);
-      updateActiveDot(); // chamada rápida para feedback
+      updateActiveDot();
     });
 
-    // Botões próximo/anterior
     const prevBtn = document.getElementById('prevSlideBtn');
     const nextBtn = document.getElementById('nextSlideBtn');
 
@@ -440,22 +410,15 @@
       goToSlide(current + 1);
     });
 
-    // Ajustar altura dos slides dinamicamente em caso de redimensionamento (manter snap)
     function refreshSlideHeights() {
-      // optional: garante que o scroll snap funcione bem quando o viewport muda
-      // não é necessário mudar altura explícita, pois cada slide tem min-height:100vh
-      // mas forçamos re-calculo de índice para dots
       updateActiveDot();
     }
     window.addEventListener('resize', () => {
       refreshSlideHeights();
-      // ajusta possível offset do scroll para manter slide correto
       let currentIdx = getCurrentSlideIndex();
-      // ao redimensionar drasticamente, revalida posição
       goToSlide(currentIdx);
     });
 
-    // Suporte a teclado: setas para cima/baixo (já padrão do scroll, mas podemos facilitar)
     window.addEventListener('keydown', (e) => {
       if (e.key === 'ArrowUp') {
         e.preventDefault();
@@ -476,13 +439,10 @@
       }
     });
 
-    // Inicialização
     createDots();
-    // garantir que o primeiro slide esteja no topo caso haja algum offset estranho
     slidesContainer.scrollTo(0, 0);
     updateActiveDot();
 
-    // Pequeno ajuste para quando terminar de carregar imagens (caso houvesse)
     window.addEventListener('load', () => {
       updateActiveDot();
       goToSlide(0);
